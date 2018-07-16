@@ -2,9 +2,9 @@
 
 ## Description
 Goals
-a. to keep track of snack consumption rates for future reference
-b. to remind volunteers about which things to ration 
-c. delegate tasks like getting water for percolator at predetermined times/making coffee/perform extra cleanup to individual volunteers so that directors don't have to constantly remind them
+- to keep track of snack consumption rates for future reference
+- to remind volunteers about which things to ration 
+- delegate tasks like getting water for percolator at predetermined times/making coffee/perform extra cleanup to individual volunteers so that directors don't have to constantly remind them
 
 
 ## Inspiration
