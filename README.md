@@ -4,7 +4,7 @@
 Goals
 a. to keep track of snack consumption rates for future reference
 b. to remind volunteers about which things to ration 
-c. delegate tasks like getting water for percolator at predetermined times/making coffee/perform extra cleanup to individual volunteers so Ryan and I don't have to constantly remind them
+c. delegate tasks like getting water for percolator at predetermined times/making coffee/perform extra cleanup to individual volunteers so that directors don't have to constantly remind them
 
 
 ## Inspiration
@@ -55,7 +55,7 @@ Note that all of these components are sort of connected, so it would benefit eve
 ## Example Uses
 
 - Volunteers can increment snack counts when hackers take snacks
-- Ryan & Andrea can send notifications to volunteers if they need something done ASAP
+- directors can post notifications to volunteers if they need something done ASAP
 - App will notify users every 30 min to clean table/refill coffee
 
 ## Style Guide
