@@ -51,14 +51,16 @@ def login_welcome():
 
 @app.route('/login', methods=['POST'])
 def login():
+    error = None
     username = request.form["Username"]
     password = request.form["Password"]
     #TODO:authenticate
-    authenticated: bool = True
-    if authenticated:
-        redirect('/food')
-    else:
-        redirect('/login')
+    if request.method == 'POST':
+        if username != 'admin' or password != 'admin':
+            error = 'Invalid credentials! Please try again.'
+        else:
+            return redirect(url_for('food_welcome'))
+    return render_template('login.html')
 
 
 @app.route('/food') #TODO: close off to non signed in users - How?
@@ -93,5 +95,5 @@ def register():
 # some error check
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+   # port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=8080, debug=True)
