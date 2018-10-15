@@ -2,10 +2,18 @@ import os
 
 from flask import Flask, request, render_template, redirect, url_for
 import csv
-from mongoengine import *
 
+from mongoengine import connect
+from passlib.hash import sha256_crypt
+
+#from user-defined files
+from mongo import DbUser
+from forms import loginForm
 
 app = Flask(__name__)
+
+#INIT THE DATABASE
+connect("snackRU")
 
 
 class User:
@@ -51,21 +59,29 @@ def my_form_post():
 
 @app.route('/login')
 def login_welcome():
-    return render_template('login.html')
+    form = loginForm()
+    return render_template('login.html', form=form)
 
 
 @app.route('/login', methods=['POST'])
 def login():
     error = None
-    username = request.form["Username"]
-    password = request.form["Password"]
+    username = request.form["user"]
+    password = request.form["password"]
     # TODO:authenticate
-    if request.method == 'POST':
-        if username != 'admin' or password != 'admin':
-            error = 'Invalid credentials! Please try again.'
-        else:
-            return redirect(url_for('food_welcome'))
-    return render_template('login.html')
+
+    #check if password is good
+    print("form validated")
+    storedPw = DbUser.objects(username=username).first().password 
+    
+    #verify will break if the password is not a sha_256 hash
+    #which is to say, if you try to login as a user created before hashing was implemented
+    if(sha256_crypt.verify(password, storedPw)):
+        return redirect('/food')
+    else:
+        return redirect('login')
+
+    return redirect('login')
 
 
 @app.route('/food')  # TODO: close off to non signed in users - How?
@@ -125,8 +141,18 @@ def register():
 
     user = User(username, email, password)
 
-    # TODO: save user to database
+    #make sure user email is unique
+    if DbUser.objects(username=username):
+        print("error: user already exists")
+        return redirect('/register')
+    
+    #hash the password
+    hashPw = sha256_crypt.encrypt(password)
+    
 
+    #save user to database
+    dbUser = DbUser(username = username, password = hashPw, email=email).save()
+    
     return redirect('/login')  # should I use url_for? maybe if url changes
     # return render_template('register.html', form=form) #redirect if neccesary
 
