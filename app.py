@@ -1,6 +1,6 @@
 import os
-
-from flask import Flask, request, render_template, redirect, url_for
+from werkzeug.utils import secure_filename
+from flask import Flask, request, render_template, redirect, url_for, flash
 import csv
 
 from mongoengine import connect
@@ -11,6 +11,7 @@ from mongo import DbUser
 from forms import loginForm
 
 app = Flask(__name__)
+app.secret_key = "super_secret"
 
 #INIT THE DATABASE
 connect("snackRU")
@@ -156,12 +157,39 @@ def register():
     return redirect('/login')  # should I use url_for? maybe if url changes
     # return render_template('register.html', form=form) #redirect if neccesary
 
+def allowed_file(fname):
+    return '.' in fname and fname.rsplit('.',1)[1].lower() == "xlsx"
 
 @app.route('/upload', methods=['POST'])
 def upload_post():
+    #upload failed
+    print(request)
+    if 'file' not in request.files:
+        print("err1")
+        flash('Upload failed, try again')
+        return redirect('/upload')
+    
+    file_ = request.files['file']
+    if file_.filename == '':
+        print("err2")
+        flash('No file selected :/')
+        return redirect('/upload')
+
+    if file_ and allowed_file(file_.filename):
+        print("err3")
+        filename = secure_filename(file_.filename)
+        file_.save(os.path.join("/home/ubuntu/Workspace/snackRU/xcel/", filename))
+        flash('Upload successful!')
+        return redirect('/current_food')
+    else:
+        print("err4")
+        flash('Bad file type')
+        return redirect('/upload')
+    
 
 @app.route('/upload', methods=['GET'])
 def upload_get():
+    return render_template('upload.html')
     
 
 # some error check
