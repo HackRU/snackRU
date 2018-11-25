@@ -7,6 +7,6 @@ class DbUser(Document):
 
 class DbFood(Document):
     foodName = StringField(required = True)
-    quantity = StringField()
+    quantity = IntField()
     category = StringField()
 

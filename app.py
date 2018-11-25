@@ -109,15 +109,13 @@ def enter_food_welcome():
 
 @app.route('/enter_food', methods=['POST'])
 # enters in food through file
-def enter_food():
-
-    fp = request.files['file']
-    if not fp:
-        return "No File"
+def enter_food(filename):
+    #directed here from upload
+    data_folder ="/home/ubuntu/Workspace/snackRU/xcel"
 
     #TODO: parse through excel file and insert into database
-    workbook = xlrd.open_workbook('xcel/Snack-Table-Guide.xlsx')
-    worksheet = workbook.sheet_by_index(0)
+    workbook = xlrd.open_workbook(os.path.join(data_folder,filename))
+    sheet = workbook.sheet_by_index(0)
     #In the sheet, firstCol:Category, secCol:foodname, thirdCol:quant
     #Can we start the list from row 11?
     row = 10
@@ -191,6 +189,7 @@ def upload_post():
         print("err3")
         filename = secure_filename(file_.filename)
         file_.save(os.path.join("/home/ubuntu/Workspace/snackRU/xcel/", filename))
+        enter_food(filename)
         flash('Upload successful!')
         return redirect('/current_food')
     else:
@@ -208,8 +207,8 @@ def upload_get():
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     # port = int(os.environ.get('PORT', 5000))
-<<<<<<< HEAD
 
-=======
+
+
     app.run(host='0.0.0.0', port=9000, debug=True)
->>>>>>> a0eb156173ed0f1b6ebb579358f97ebe934bfd9a
+
