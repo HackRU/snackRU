@@ -7,3 +7,6 @@ class loginForm(FlaskForm):
 
     class Meta:
         csrf = False
+
+class uploadForm(FlaskForm):
+    userFile = 
