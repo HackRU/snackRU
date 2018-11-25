@@ -2,12 +2,12 @@ import os
 from werkzeug.utils import secure_filename
 from flask import Flask, request, render_template, redirect, url_for, flash
 import csv
-
+import xlrd
 from mongoengine import connect
 from passlib.hash import sha256_crypt
 
 #from user-defined files
-from mongo import DbUser
+from mongo import DbUser, DbFood
 from forms import loginForm
 
 app = Flask(__name__)
@@ -115,8 +115,20 @@ def enter_food():
     if not fp:
         return "No File"
 
-    #TODO: parse through csv file and insert into database
-
+    #TODO: parse through excel file and insert into database
+    workbook = xlrd.open_workbook('xcel/Snack-Table-Guide.xlsx')
+    worksheet = workbook.sheet_by_index(0)
+    #In the sheet, firstCol:Category, secCol:foodname, thirdCol:quant
+    #Can we start the list from row 11?
+    row = 10
+    while sheet.cell(row,1).value != xlrd.empty_cell.value:
+        foodname = sheet.cell(row,1).value
+        foodquant = sheet.cell(row,2).value
+        foodcat = sheet.cell(row,0).value
+        #are we creating a food object?
+        dbfood = DbFood(foodName = foodname, quantity = foodquant, category = foodcat).save()
+        row += 1
+    
 
 @app.route('/current_food')
 def current_food_welcome():
@@ -196,4 +208,8 @@ def upload_get():
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     # port = int(os.environ.get('PORT', 5000))
+<<<<<<< HEAD
+
+=======
     app.run(host='0.0.0.0', port=9000, debug=True)
+>>>>>>> a0eb156173ed0f1b6ebb579358f97ebe934bfd9a
